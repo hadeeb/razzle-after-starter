@@ -18,6 +18,8 @@
     "react-router-dom": "^5.1.2"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-constant-elements": "^7.8.3",
+    "@babel/plugin-transform-react-inline-elements": "^7.8.3",
     "babel-esm-plugin": "^0.7.0",
     "babel-plugin-emotion": "^10.0.27",
     "babel-plugin-macros": "^2.8.0",
