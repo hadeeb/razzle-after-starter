@@ -9,7 +9,7 @@ import { routes } from "./routes";
 import { withLayout } from "./layout.js";
 
 function Document(props) {
-  const { helmet, data, styles, scripts, css, ids } = props;
+  const { helmet, styles, scripts, css, ids } = props;
   const htmlAttrs = helmet.htmlAttributes.toComponent();
   const bodyAttrs = helmet.bodyAttributes.toComponent();
 
@@ -31,7 +31,7 @@ function Document(props) {
       </head>
       <body {...bodyAttrs}>
         <AfterRoot />
-        <AfterData data={data} />
+        <AfterData />
         <ModuleNomodule />
         <ES6Scripts scripts={scripts} />
         <ES5Scripts scripts={scripts} />
@@ -40,7 +40,7 @@ function Document(props) {
   );
 }
 
-Document.getInitialProps = async function({ assets, data, renderPage, req }) {
+Document.getInitialProps = async function({ assets, renderPage, req }) {
   const page = await renderPage(withLayout);
   const { styles: stylesArray, scripts: scriptsArray } = getAssests({
     req,
@@ -55,7 +55,7 @@ Document.getInitialProps = async function({ assets, data, renderPage, req }) {
 
   const styles = stylesArray.concat(assets.client.css).filter(x => x);
 
-  return { data, styles, scripts, ...page };
+  return { styles, scripts, ...page };
 };
 
 function ModuleNomodule() {
