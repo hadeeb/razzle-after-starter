@@ -75,6 +75,7 @@ function BabelPreset(_, { dev, target }) {
           version: require("@babel/runtime/package.json").version,
         },
       ],
+      dev && require.resolve("babel-plugin-treat"),
       require.resolve("babel-plugin-macros"),
       // Remove PropTypes
       !dev && require.resolve("babel-plugin-transform-react-remove-prop-types"),

@@ -1,3 +1,4 @@
+import "./index.css";
 import { After, ensureReady } from "@jaredpalmer/after";
 import * as React from "react";
 import { hydrate } from "react-dom";
