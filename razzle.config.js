@@ -1,8 +1,8 @@
 const getBabelPreset = require("./plugins/babel");
-const esmPlugin = require("./plugins/esm");
+const polyfills = require("./plugins/polyfills");
 const bundleAnalyzerPlugin = require("./plugins/bundleAnalyzer");
 
 module.exports = {
-  plugins: ["manifest", esmPlugin, bundleAnalyzerPlugin],
-  modifyBabelOptions: getBabelPreset
+  plugins: [polyfills, bundleAnalyzerPlugin],
+  modifyBabelOptions: getBabelPreset,
 };

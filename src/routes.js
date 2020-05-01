@@ -1,22 +1,22 @@
-import asyncComponent from "@jaredpalmer/after/asyncComponent";
+import { asyncComponent } from "@jaredpalmer/after";
 
 const routes = [
   {
-    name: "Home",
     path: "/",
     exact: true,
     component: asyncComponent({
-      loader: () => import(/* webpackChunkName: "Home" */ "./Home")
-    })
+      loader: () => import(/* webpackChunkName: "Home" */ "./Home"),
+      chunkName: "Home",
+    }),
   },
   {
-    name: "About",
     path: "/about",
     exact: true,
     component: asyncComponent({
-      loader: () => import(/* webpackChunkName:"About" */ "./About")
-    })
-  }
+      loader: () => import(/* webpackChunkName:"About" */ "./About"),
+      chunkName: "About",
+    }),
+  },
 ];
 
 export { routes };

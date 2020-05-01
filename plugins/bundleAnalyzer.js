@@ -3,8 +3,7 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 
 const argv = require("yargs").argv;
 
-module.exports = (defaultConfig, { target, dev }) => {
-  const config = Object.assign({}, defaultConfig);
+module.exports = (config, { target, dev }) => {
   if (target === "web" && !dev && argv.stats) {
     config.plugins.push(new BundleAnalyzerPlugin());
   }

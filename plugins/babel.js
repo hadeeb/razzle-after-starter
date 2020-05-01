@@ -1,23 +1,85 @@
-const getDefaultPreset = require("razzle/babel");
+function BabelPreset(_, { dev, target }) {
+  const IS_BROWSER = target === "web";
 
-const isProduction = process.env.NODE_ENV === "production";
+  const envTarget = IS_BROWSER
+    ? {
+        // For browser bundle read from browserslist
+      }
+    : { targets: { node: "current" } };
 
-function preset() {
-  // Destructuring default preset so
-  // babel-esm-plugin can detect preset-env
-  const defaultpreset = getDefaultPreset();
   return {
-    presets: defaultpreset.presets,
+    presets: [
+      [
+        require.resolve("@babel/preset-env"),
+        {
+          modules: false,
+          bugfixes: true,
+          loose: true,
+          exclude: [
+            "transform-typeof-symbol",
+            "transform-regenerator",
+            // fast-async will handle async
+            "transform-async-to-generator",
+          ],
+          ...envTarget,
+        },
+      ],
+      [
+        require.resolve("@babel/preset-react"),
+        {
+          // Adds component stack to warning messages
+          // Adds __self attribute to JSX which React will use for some warnings
+          development: dev,
+          // Will use the native built-in instead of trying to polyfill
+          // behavior for any plugins that require one.
+          useBuiltIns: true,
+        },
+      ],
+    ],
     plugins: [
-      ...defaultpreset.plugins,
+      // Adds syntax support for import()
+      require.resolve("@babel/plugin-syntax-dynamic-import"),
+      // class properties class { handleThing = () => { } }
+      [
+        require.resolve("@babel/plugin-proposal-class-properties"),
+        { loose: true },
+      ],
+      // Rest spread
+      [
+        require.resolve("@babel/plugin-proposal-object-rest-spread"),
+        {
+          loose: true,
+          useBuiltIns: true,
+        },
+      ],
+      // Optional chaining
+      [
+        require.resolve("@babel/plugin-proposal-optional-chaining"),
+        { loose: true },
+      ],
+      // Nullish coalescing operator
+      [
+        require.resolve("@babel/plugin-proposal-nullish-coalescing-operator"),
+        { loose: true },
+      ],
+      // async-await transform (async-await to Promises)
+      IS_BROWSER && [require.resolve("fast-async"), { spec: true }],
+      [
+        "@babel/plugin-transform-runtime",
+        {
+          absoluteRuntime: false,
+          corejs: false,
+          helpers: true,
+          regenerator: false,
+          useESModules: IS_BROWSER,
+          version: require("@babel/runtime/package.json").version,
+        },
+      ],
       require.resolve("babel-plugin-macros"),
-      require.resolve("babel-plugin-emotion"),
-      isProduction &&
-        require.resolve("@babel/plugin-transform-react-inline-elements"),
-      require.resolve("@babel/plugin-transform-react-constant-elements")
-      // more plugins
-    ].filter(Boolean)
+      // Remove PropTypes
+      !dev && require.resolve("babel-plugin-transform-react-remove-prop-types"),
+    ].filter(Boolean),
   };
 }
 
-module.exports = preset;
+module.exports = BabelPreset;

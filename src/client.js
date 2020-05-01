@@ -1,25 +1,15 @@
-import After from "@jaredpalmer/after/after";
-import { ensureReady } from "@jaredpalmer/after/ensureReady";
-import React from "react";
+import { After, ensureReady } from "@jaredpalmer/after";
+import * as React from "react";
 import { hydrate } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import createCache from "@emotion/cache";
-import { CacheProvider } from "@emotion/core";
 
 import { routes } from "./routes";
-import { withLayout } from "./layout";
 
-const Page = withLayout(After);
-
-const cache = createCache();
-
-ensureReady(routes).then(data => {
+ensureReady(routes).then((data) => {
   hydrate(
-    <CacheProvider value={cache}>
-      <BrowserRouter>
-        <Page data={data} routes={routes} />
-      </BrowserRouter>
-    </CacheProvider>,
+    <BrowserRouter>
+      <After data={data} routes={routes} />
+    </BrowserRouter>,
     document.getElementById("root")
   );
 });
