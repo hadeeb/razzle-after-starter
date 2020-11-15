@@ -1,11 +1,7 @@
-import {
-  AfterData,
-  AfterRoot,
-  AfterScripts,
-  AfterStyles,
-  useAfterContext,
-} from "@jaredpalmer/after";
-import * as React from "react";
+import { AfterData, AfterRoot, useAfterContext } from "@jaredpalmer/after";
+
+/**@type {import("@jaredpalmer/after").Chunks} */
+const chunks = require(process.env.RAZZLE_CHUNKS_MANIFEST);
 
 function Document(props) {
   const { helmet } = props;
@@ -59,48 +55,63 @@ function isJS(str) {
 }
 
 function Polyfills() {
-  const { assets } = useAfterContext();
-  const polyfill = assets.polyfills.js;
-  return polyfill ? (
-    <script
-      src={polyfill}
-      noModule
-      defer
-      type="text/javascript"
-      crossOrigin="anonymous"
-    />
-  ) : null;
+  return chunks.polyfills.js
+    .filter(isJS)
+    .map((path) => (
+      <script
+        src={path}
+        noModule
+        defer
+        type="text/javascript"
+        crossOrigin="anonymous"
+      />
+    ));
 }
 
 function Preload() {
-  const { assets, scripts, styles } = useAfterContext();
+  const { scripts, styles } = useAfterContext();
   return (
     <>
-      {assets.client.css && (
-        <link rel="preload" href={assets.client.css} as="style" />
-      )}
-      {styles.map((path) => (
+      {chunks.client.css.concat(styles).map((path) => (
         <link key={path} rel="preload" href={path} as="style" />
       ))}
-      {scripts.filter(isJS).map((path) => (
-        <link
-          key={path}
-          rel="preload"
-          href={path}
-          as="script"
-          crossOrigin="anonymous"
-        />
-      ))}
-      {assets.client.js && (
-        <link
-          href={assets.client.js}
-          rel="preload"
-          as="script"
-          crossOrigin="anonymous"
-        />
-      )}
+      {scripts
+        .concat(chunks.client.js)
+        .filter(isJS)
+        .map((path) => (
+          <link
+            key={path}
+            rel="preload"
+            href={path}
+            as="script"
+            crossOrigin="anonymous"
+          />
+        ))}
     </>
   );
+}
+
+function AfterStyles() {
+  const { styles } = useAfterContext();
+  return chunks.client.css
+    .concat(styles)
+    .map((path) => <link key={path} rel="stylesheet" href={path} />);
+}
+
+function AfterScripts() {
+  const { scripts } = useAfterContext();
+  return scripts
+    .concat(chunks.client.js)
+    .filter(isJS)
+    .map((path) => (
+      <script
+        key={path}
+        defer
+        type="text/javascript"
+        src={path}
+        crossOrigin="anonymous"
+      />
+    ));
 }
 
 export default Document;

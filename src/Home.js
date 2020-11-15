@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { Link } from "react-router-dom";
 
 function Home() {
@@ -12,7 +10,7 @@ function Home() {
         To get started, edit <code>src/Home.js</code> or{" "}
         <code>src/About.js</code> and save to reload.
       </p>
-      <Link to="/about">About -></Link>
+      <Link to="/about">About</Link>
     </main>
   );
 }

@@ -1,9 +1,12 @@
+const pkg = require("../package.json");
+
 function BabelPreset(_, { dev, target }) {
   const IS_BROWSER = target === "web";
 
   const envTarget = IS_BROWSER
     ? {
         // For browser bundle read from browserslist
+        targets: pkg.browserslist,
       }
     : { targets: { node: "current" } };
 
@@ -15,11 +18,10 @@ function BabelPreset(_, { dev, target }) {
           modules: false,
           bugfixes: true,
           loose: true,
-          exclude: [
-            "transform-typeof-symbol",
-            "transform-regenerator",
-            // fast-async will handle async
-            "transform-async-to-generator",
+          exclude: ["transform-typeof-symbol"],
+          include: [
+            "@babel/plugin-proposal-optional-chaining",
+            "@babel/plugin-proposal-nullish-coalescing-operator",
           ],
           ...envTarget,
         },
@@ -33,10 +35,13 @@ function BabelPreset(_, { dev, target }) {
           // Will use the native built-in instead of trying to polyfill
           // behavior for any plugins that require one.
           useBuiltIns: true,
+          runtime: "automatic",
         },
       ],
     ],
     plugins: [
+      // After.js async imports
+      require.resolve("babel-plugin-after"),
       // Adds syntax support for import()
       require.resolve("@babel/plugin-syntax-dynamic-import"),
       // class properties class { handleThing = () => { } }
@@ -52,18 +57,6 @@ function BabelPreset(_, { dev, target }) {
           useBuiltIns: true,
         },
       ],
-      // Optional chaining
-      [
-        require.resolve("@babel/plugin-proposal-optional-chaining"),
-        { loose: true },
-      ],
-      // Nullish coalescing operator
-      [
-        require.resolve("@babel/plugin-proposal-nullish-coalescing-operator"),
-        { loose: true },
-      ],
-      // async-await transform (async-await to Promises)
-      IS_BROWSER && [require.resolve("fast-async"), { spec: true }],
       [
         "@babel/plugin-transform-runtime",
         {

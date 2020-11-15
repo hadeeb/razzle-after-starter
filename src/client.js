@@ -1,5 +1,4 @@
 import { After, ensureReady } from "@jaredpalmer/after";
-import * as React from "react";
 import { hydrate } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 
