@@ -9,7 +9,7 @@
   "dependencies": {
     "@jaredpalmer/after": "^3.1.2",
     "@next/polyfill-nomodule": "^10.0.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
